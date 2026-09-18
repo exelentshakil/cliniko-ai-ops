@@ -2,7 +2,7 @@
   "name": "cliniko-ai-ops",
   "version": "1.0.0",
   "private": true,
-  "description": "Modular Social-Listening & Lead Discovery MVP for Musical Gear & Marketplace Intelligence",
+  "description": "Autonomous Clinical Operations & Practice Management Cockpit for Cliniko v1 API",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
