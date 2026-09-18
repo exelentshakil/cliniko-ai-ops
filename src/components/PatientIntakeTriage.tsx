@@ -60,10 +60,14 @@ const INITIAL_TRIAGE_RESULT: IntakeTriageResult = {
     'History of prior lumbar spinal surgery (L4/L5 laminectomy)',
   ],
   preliminaryCareNotes: 'Immediate practitioner alert dispatched. Perform urgent lower limb neurological examination (S2-S4 dermatomes, anal tone inquiry, bilateral motor/reflex test). Prepare immediate emergency department escalation protocol if confirmed.',
-  clinikoMedicalAlertPayload: {
-    patient_id: 'pt_55102',
-    name: 'CLINICAL RED FLAG: Cauda Equina Protocol',
-    content: 'Urgent screening required: Urinary hesitancy and saddle paresthesia reported in online intake.',
+  provider: 'OPENAI',
+  model: 'gpt-4o-mini',
+  latencyMs: 318,
+  firewall: {
+    passed: true,
+    violations: [],
+    redactedFields: ['medicare_card_number', 'phone_number'],
+    auditId: 'sec_firewall_au_sync_9941',
   },
 };
 

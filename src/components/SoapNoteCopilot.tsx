@@ -55,6 +55,7 @@ const INITIAL_NOTE_RESULT: SoapNoteResult = {
     painScale: 7,
     aggravatingFactors: ['Sitting >10 mins', 'Forward bending', 'Coughing / Valsalva'],
     easingFactors: ['Lying prone with pillow support', 'Unweighted walking'],
+    functionalImpact: 'Unable to sit for work shifts or lift objects >5kg',
   },
   objective: {
     activeRangeOfMotion: 'Lumbar flexion restricted to 40% with peripheralization. Lumbar extension 15 deg with central pain only.',
@@ -64,6 +65,7 @@ const INITIAL_NOTE_RESULT: SoapNoteResult = {
   },
   assessment: {
     clinicalImpression: 'Acute right L5/S1 intervertebral disc herniation with compressive S1 radiculopathy',
+    differentialDiagnoses: ['L4/L5 disc protrusion', 'Piriformis syndrome', 'Lumbar facet joint arthropathy'],
     icd10Codes: ['M54.5', 'M51.26'],
     snomedCodes: ['279039007'],
     prognosis: 'Favorable for conservative directional preference physical therapy with McKenzie protocol',
@@ -71,21 +73,29 @@ const INITIAL_NOTE_RESULT: SoapNoteResult = {
   plan: {
     inClinicTreatment: 'Gentle prone lumbar traction and Grade II Maitland PA mobilizations to L4-S1.',
     homeExercisePrescription: [
-      { exercise: 'McKenzie prone press-ups in lying', setsReps: '10 reps every 2 hours' },
-      { exercise: 'Cold cryotherapy to right lumbosacral junction', setsReps: '15 mins every 4 hours' },
-      { exercise: 'Ergonomic lumbar lordosis roll sitting modifications', setsReps: 'Max 20 mins continuous sitting' },
+      { exercise: 'McKenzie prone press-ups in lying', setsReps: '10 reps every 2 hours', notes: 'Maintain pelvis flat; stop if leg pain peripheralizes' },
+      { exercise: 'Cold cryotherapy to right lumbosacral junction', setsReps: '15 mins every 4 hours', notes: 'Apply wrapped in towel; do not place ice directly on skin' },
+      { exercise: 'Ergonomic lumbar lordosis roll sitting modifications', setsReps: 'Max 20 mins continuous sitting', notes: 'Use lumbar support cushion in office chair and car' },
     ],
+    precautions: 'Monitor for cauda equina red flags (saddle anesthesia, bowel/bladder incontinence)',
     suggestedClinikoBooking: 'Subsequent Consultation (30 min) - Lumbar Review',
     followUpInterval: 'Review in 4 days',
   },
   clinikoTreatmentNotePayload: {
     patient_id: 'pt_98241',
+    practitioner_id: 'pr_5501',
     template_id: 'tmpl_allied_health_soap_v1',
     content: '<h2>Subjective</h2><p>Chief Complaint: Acute right lower back and buttock pain (VAS 7/10)</p><p>History: Onset 3 days ago lifting 25kg crate. Peripheralizing into posterior calf. No red flags.</p><h2>Objective</h2><p>ROM: Flexion 40%, Extension 15 deg. Positive right SLR (35 deg) & Slump test. Diminished right S1 reflex.</p><h2>Assessment</h2><p>Acute right L5/S1 disc herniation with compressive radiculopathy (ICD-10 M54.5, M51.26).</p><h2>Plan</h2><p>Prone traction, Grade II mobilizations. McKenzie extensions 10 reps q2h. Review in 4 days.</p>',
   },
   model: 'gpt-4o-mini',
-  provider: 'OpenAI',
+  provider: 'OPENAI',
   latencyMs: 312,
+  firewall: {
+    passed: true,
+    violations: [],
+    redactedFields: ['medicare_card_number', 'phone_number'],
+    auditId: 'sec_firewall_au_sync_9942',
+  },
 };
 
 export function SoapNoteCopilot() {
