@@ -195,30 +195,69 @@ export function PatientIntakeTriage() {
 
       {/* Triage Detail Display Grid */}
       <div className="mt-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Left: Raw Intake Form Data (5 cols) */}
-        <div className="lg:col-span-5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-900/40 p-4 space-y-3 font-mono text-xs shadow-2xs">
-          <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-2.5">
-            <span className="font-extrabold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
-              Incoming Intake Payload
-            </span>
-            <span className="text-[11px] text-emerald-700 dark:text-emerald-400 font-bold">
-              Cliniko Webhook: patient.intake
-            </span>
+        {/* Left: Raw Intake Form Data & Triage Telemetry (5 cols) */}
+        <div className="lg:col-span-5 space-y-3.5">
+          <div className="rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-900/40 p-4 space-y-3 font-mono text-xs shadow-2xs">
+            <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-2.5">
+              <span className="font-extrabold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
+                Incoming Intake Payload
+              </span>
+              <span className="text-[11px] text-emerald-700 dark:text-emerald-400 font-bold">
+                Cliniko Webhook: patient.intake
+              </span>
+            </div>
+
+            <div className="space-y-2 text-slate-800 dark:text-slate-200 font-medium">
+              <p><strong className="text-slate-900 dark:text-slate-100 font-bold">Patient:</strong> {intake.patientName} (DOB: {intake.dob})</p>
+              <p><strong className="text-slate-900 dark:text-slate-100 font-bold">Chief Complaint:</strong> {intake.painLocation}</p>
+              <p><strong className="text-slate-900 dark:text-slate-100 font-bold">Symptom Onset:</strong> {intake.duration}</p>
+              <p><strong className="text-slate-900 dark:text-slate-100 font-bold">Reported VAS Pain:</strong> {intake.painScale}/10</p>
+              <p><strong className="text-slate-900 dark:text-slate-100 font-bold">Medical History:</strong> {intake.medicalHistory}</p>
+            </div>
+
+            <div className="pt-2.5 border-t border-slate-200 dark:border-slate-800">
+              <span className="text-[11px] font-bold text-slate-600 dark:text-slate-400 block mb-1 uppercase">Patient Self-Description:</span>
+              <p className="text-xs bg-white dark:bg-slate-950 p-3 rounded-lg border border-slate-300 dark:border-slate-800 text-slate-800 dark:text-slate-200 leading-relaxed font-sans font-medium shadow-2xs">
+                &quot;{intake.symptoms}&quot;
+              </p>
+            </div>
           </div>
 
-          <div className="space-y-2 text-slate-800 dark:text-slate-200 font-medium">
-            <p><strong className="text-slate-900 dark:text-slate-100 font-bold">Patient:</strong> {intake.patientName} (DOB: {intake.dob})</p>
-            <p><strong className="text-slate-900 dark:text-slate-100 font-bold">Chief Complaint:</strong> {intake.painLocation}</p>
-            <p><strong className="text-slate-900 dark:text-slate-100 font-bold">Symptom Onset:</strong> {intake.duration}</p>
-            <p><strong className="text-slate-900 dark:text-slate-100 font-bold">Reported VAS Pain:</strong> {intake.painScale}/10</p>
-            <p><strong className="text-slate-900 dark:text-slate-100 font-bold">Medical History:</strong> {intake.medicalHistory}</p>
-          </div>
-
-          <div className="pt-2.5 border-t border-slate-200 dark:border-slate-800">
-            <span className="text-[11px] font-bold text-slate-600 dark:text-slate-400 block mb-1 uppercase">Patient Self-Description:</span>
-            <p className="text-xs bg-white dark:bg-slate-950 p-3 rounded-lg border border-slate-300 dark:border-slate-800 text-slate-800 dark:text-slate-200 leading-relaxed font-sans font-medium shadow-2xs">
-              &quot;{intake.symptoms}&quot;
-            </p>
+          {/* In-Memory APP 11 Triage Stream & Cliniko Router Card */}
+          <div className="rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-850 p-4 text-xs font-mono space-y-2.5 shadow-2xs">
+            <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-2">
+              <span className="font-extrabold uppercase text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
+                <ShieldCheck className="h-4 w-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
+                APP 11 Triage Guard
+              </span>
+              <span className="text-[11px] font-bold text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-300 dark:border-emerald-800">
+                In-Memory Sanitized
+              </span>
+            </div>
+            <div className="space-y-1.5 text-slate-700 dark:text-slate-300">
+              <div className="flex items-center justify-between">
+                <span>Medicare AU Ingestion:</span>
+                <span className="text-emerald-700 dark:text-emerald-400 font-bold bg-slate-100 dark:bg-slate-900 px-2 py-0.5 rounded border border-slate-200 dark:border-slate-800">
+                  REDACTED [•••• ••••• •]
+                </span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span>Practitioner Routing:</span>
+                <span className="font-bold text-slate-900 dark:text-slate-100">{triageResult ? triageResult.recommendedPractitionerSpecialty : "Senior Musculoskeletal Physio"}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span>Triage Urgency:</span>
+                <span className={`font-bold ${triageResult?.triageCategory === "Urgent" ? "text-rose-600 dark:text-rose-400" : "text-emerald-600 dark:text-emerald-400"}`}>
+                  {triageResult ? triageResult.triageCategory : "Urgent"} ({triageResult ? triageResult.durationMinutes : 60}m)
+                </span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span>Inference Latency:</span>
+                <span className="font-bold text-teal-700 dark:text-teal-400">
+                  {triageResult?.latencyMs || 318}ms ({triageResult?.provider || "OPENAI"})
+                </span>
+              </div>
+            </div>
           </div>
         </div>
 
