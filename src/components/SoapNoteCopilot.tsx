@@ -92,9 +92,14 @@ const INITIAL_NOTE_RESULT: SoapNoteResult = {
   latencyMs: 312,
   firewall: {
     passed: true,
-    violations: [],
-    redactedFields: ['medicare_card_number', 'phone_number'],
-    auditId: 'sec_firewall_au_sync_9942',
+    sanitizedInput: 'Sanitized clinical intake stream',
+    piiRedacted: true,
+    injectionDetected: false,
+    riskScore: 0.02,
+    redactions: [
+      { type: 'MEDICARE_AU', count: 1 },
+      { type: 'AU_PHONE', count: 1 },
+    ],
   },
 };
 
