@@ -20,6 +20,7 @@ import {
   Workflow,
   Server,
   Stethoscope,
+  Terminal,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -155,44 +156,44 @@ export function ClinikoTaskMatrix() {
     setTimeout(() => {
       setSimulatingId(null);
       setSimulatedSuccess(task.id);
-    }, 700);
+    }, 650);
   };
 
   return (
-    <div className="w-full rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-5 sm:p-6 shadow-xs">
+    <div className="w-full rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6 sm:p-7 shadow-xs">
       {/* Section Header */}
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-[var(--color-border)] pb-5">
         <div>
-          <div className="flex items-center gap-2 mb-1.5 flex-wrap">
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 dark:bg-emerald-950/50 px-2.5 py-0.5 text-xs font-semibold text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 whitespace-nowrap shrink-0">
-              <Sparkles className="h-3 w-3 text-emerald-600 dark:text-emerald-400" />
+          <div className="flex items-center gap-2 mb-2 flex-wrap">
+            <span className="inline-flex items-center gap-1.5 rounded-md bg-teal-100 dark:bg-teal-950 px-2.5 py-0.5 text-xs font-bold text-teal-900 dark:text-teal-200 border border-teal-300 dark:border-teal-800 whitespace-nowrap shrink-0">
+              <Sparkles className="h-3.5 w-3.5 text-teal-600 dark:text-teal-400" />
               Practice Automation Engine
             </span>
-            <span className="rounded-full bg-blue-50 dark:bg-blue-950/40 px-2 py-0.5 text-[11px] font-mono font-bold text-blue-800 dark:text-blue-300 border border-blue-200 dark:border-blue-800 whitespace-nowrap shrink-0">
+            <span className="rounded-md bg-slate-100 dark:bg-slate-800 px-2 py-0.5 text-xs font-mono font-bold text-slate-800 dark:text-slate-200 border border-slate-300 dark:border-slate-700 whitespace-nowrap shrink-0">
               Cliniko REST API v1
             </span>
-            <span className="text-xs text-[var(--color-text-muted)] font-mono">
-              6 Core Operational Workflows
+            <span className="text-xs font-mono font-bold text-slate-500 dark:text-slate-400">
+              6 Core Clinical Operations
             </span>
           </div>
-          <h2 className="text-lg sm:text-xl font-extrabold tracking-tight text-[var(--color-text-primary)]">
+          <h2 className="text-xl sm:text-2xl font-black tracking-tight text-[var(--color-text-primary)]">
             Cliniko Operations Matrix: Practice Expectation vs. Native API vs. ClinikoOps AI
           </h2>
-          <p className="text-xs sm:text-sm text-[var(--color-text-secondary)] mt-1 max-w-3xl">
+          <p className="text-sm font-medium text-[var(--color-text-secondary)] mt-1.5 max-w-3xl leading-relaxed">
             A concrete architectural comparison showing why raw Cliniko API calls alone aren't enough, and how our autonomous AI layer bridges the gap to eliminate manual clinic admin.
           </p>
         </div>
 
         {/* Role Filter Tabs */}
-        <div className="flex items-center gap-1 rounded-xl border border-[var(--color-border)] bg-[var(--color-panel-subtle)] p-1 shrink-0 overflow-x-auto">
+        <div className="flex items-center gap-1 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-900 p-1 shrink-0 overflow-x-auto">
           {(['All', 'Practitioners', 'Front Desk', 'Practice Manager'] as const).map((role) => (
             <button
               key={role}
               onClick={() => setActiveRole(role)}
-              className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-all whitespace-nowrap shrink-0 ${
+              className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-all whitespace-nowrap shrink-0 ${
                 activeRole === role
-                  ? 'bg-[var(--color-surface)] text-[var(--color-text-primary)] shadow-2xs border border-[var(--color-border)]'
-                  : 'text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)]'
+                  ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-xs border border-slate-300 dark:border-slate-600'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
               }`}
             >
               {role}
@@ -206,37 +207,41 @@ export function ClinikoTaskMatrix() {
         
         {/* Left Column: Interactive Task Cards (5 cols) */}
         <div className="lg:col-span-5 space-y-3">
-          <div className="text-xs font-mono font-bold uppercase tracking-wider text-[var(--color-text-secondary)] px-1">
-            Automated Clinical Tasks ({filteredTasks.length})
+          <div className="flex items-center justify-between text-xs font-mono font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 px-1">
+            <span>Automated Tasks ({filteredTasks.length})</span>
+            <span className="text-teal-700 dark:text-teal-400">Select to inspect</span>
           </div>
-          <div className="space-y-2.5 max-h-[640px] overflow-y-auto pr-1">
+          <div className="space-y-2.5 max-h-[660px] overflow-y-auto pr-1">
             {filteredTasks.map((task) => {
               const isSelected = selectedTask.id === task.id;
               return (
                 <div
                   key={task.id}
                   onClick={() => setSelectedTask(task)}
-                  className={`p-3.5 rounded-xl border transition-all cursor-pointer text-left ${
+                  className={`p-4 rounded-xl border transition-all cursor-pointer text-left relative overflow-hidden ${
                     isSelected
-                      ? 'bg-teal-50/70 dark:bg-teal-950/40 border-teal-500/50 shadow-xs ring-1 ring-teal-500/30'
-                      : 'bg-[var(--color-panel-subtle)] border-[var(--color-border)] hover:bg-[var(--color-surface)] hover:border-slate-300 dark:hover:border-slate-700'
+                      ? 'bg-teal-50/80 dark:bg-teal-950/40 border-teal-500 shadow-xs ring-1 ring-teal-500/50'
+                      : 'bg-[var(--color-surface)] border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-850 hover:border-slate-300 dark:hover:border-slate-700'
                   }`}
                 >
-                  <div className="flex items-center justify-between gap-2 mb-1.5">
-                    <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-md bg-[var(--color-surface)] border border-[var(--color-border)] text-teal-700 dark:text-teal-300">
+                  {isSelected && (
+                    <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-teal-600 dark:bg-teal-400" />
+                  )}
+                  <div className="flex items-center justify-between gap-2 mb-2 pl-1">
+                    <span className="text-[11px] font-mono font-bold px-2 py-0.5 rounded bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-teal-800 dark:text-teal-300">
                       {task.role}
                     </span>
-                    <span className="text-[10px] font-mono font-semibold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
-                      <CheckCircle2 className="h-3 w-3" />
+                    <span className="text-xs font-mono font-bold text-emerald-700 dark:text-emerald-400 flex items-center gap-1">
+                      <CheckCircle2 className="h-3.5 w-3.5" />
                       {task.status}
                     </span>
                   </div>
-                  <h4 className="text-xs sm:text-sm font-bold text-[var(--color-text-primary)] leading-snug">
+                  <h4 className="text-sm font-bold text-[var(--color-text-primary)] leading-snug pl-1">
                     {task.title}
                   </h4>
-                  <div className="mt-2 flex items-center justify-between text-[11px] text-[var(--color-text-muted)] font-mono">
-                    <span className="truncate">{task.clinikoEndpoints[0]}</span>
-                    <span className="text-teal-600 dark:text-teal-400 font-bold shrink-0">
+                  <div className="mt-2.5 flex items-center justify-between text-xs text-slate-600 dark:text-slate-400 font-mono pl-1">
+                    <span className="truncate font-semibold text-slate-700 dark:text-slate-300">{task.clinikoEndpoints[0]}</span>
+                    <span className="text-teal-700 dark:text-teal-400 font-bold shrink-0 ml-2">
                       {task.efficiencyGain}
                     </span>
                   </div>
@@ -247,60 +252,60 @@ export function ClinikoTaskMatrix() {
         </div>
 
         {/* Right Column: 3-Pillar Architectural Deep-Dive (7 cols) */}
-        <div className="lg:col-span-7 flex flex-col justify-between rounded-xl border border-[var(--color-border)] bg-[var(--color-panel-subtle)] p-5">
+        <div className="lg:col-span-7 flex flex-col justify-between rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-900/50 p-6">
           <div className="space-y-4">
             
             {/* Active Task Header & Endpoints */}
-            <div className="border-b border-[var(--color-border)] pb-3.5">
-              <div className="flex items-center justify-between gap-2 flex-wrap mb-2">
-                <span className="text-xs font-mono font-bold px-2.5 py-0.5 rounded-full bg-teal-100 dark:bg-teal-950 text-teal-800 dark:text-teal-300 border border-teal-300 dark:border-teal-800">
+            <div className="border-b border-slate-200 dark:border-slate-800 pb-4">
+              <div className="flex items-center justify-between gap-2 flex-wrap mb-2.5">
+                <span className="text-xs font-mono font-bold px-3 py-1 rounded-full bg-teal-100 dark:bg-teal-950 text-teal-900 dark:text-teal-200 border border-teal-300 dark:border-teal-800">
                   {selectedTask.role} Operational Workflow
                 </span>
                 <div className="flex items-center gap-1.5 flex-wrap">
                   {selectedTask.clinikoEndpoints.map((ep) => (
-                    <span key={ep} className="text-[10px] font-mono px-2 py-0.5 rounded bg-[var(--color-surface)] border border-[var(--color-border)] text-blue-700 dark:text-blue-300 font-medium">
+                    <span key={ep} className="text-xs font-mono font-bold px-2.5 py-0.5 rounded bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200">
                       {ep}
                     </span>
                   ))}
                 </div>
               </div>
-              <h3 className="text-base sm:text-lg font-extrabold text-[var(--color-text-primary)]">
+              <h3 className="text-lg sm:text-xl font-extrabold text-[var(--color-text-primary)]">
                 {selectedTask.title}
               </h3>
             </div>
 
             {/* 3-Way Comparative Analysis */}
-            <div className="space-y-3 text-xs">
+            <div className="space-y-3.5">
               
               {/* Pillar 1: Practice Expectation & Pain */}
-              <div className="rounded-lg border border-amber-200 dark:border-amber-900/50 bg-amber-50/50 dark:bg-amber-950/20 p-3">
-                <div className="flex items-center gap-1.5 text-amber-800 dark:text-amber-300 font-bold text-xs mb-1">
-                  <Clock className="h-3.5 w-3.5 text-amber-600 dark:text-amber-400 shrink-0" />
-                  <span>1. What the Practice Expects (Headache Today)</span>
+              <div className="rounded-xl border border-amber-300 dark:border-amber-800 bg-amber-50/80 dark:bg-amber-950/30 p-4">
+                <div className="flex items-center gap-2 text-amber-900 dark:text-amber-200 font-extrabold text-xs mb-1.5 uppercase font-mono tracking-wider">
+                  <Clock className="h-4 w-4 text-amber-600 dark:text-amber-400 shrink-0" />
+                  <span>1. Practice Expectation &amp; Current Friction</span>
                 </div>
-                <p className="text-[var(--color-text-secondary)] leading-relaxed">
+                <p className="text-xs sm:text-sm font-medium text-slate-800 dark:text-slate-200 leading-relaxed">
                   {selectedTask.businessExpectation}
                 </p>
               </div>
 
               {/* Pillar 2: Raw Cliniko API Limitation */}
-              <div className="rounded-lg border border-slate-200 dark:border-slate-800 bg-[var(--color-surface)] p-3">
-                <div className="flex items-center gap-1.5 text-[var(--color-text-primary)] font-bold text-xs mb-1">
-                  <Server className="h-3.5 w-3.5 text-blue-500 shrink-0" />
+              <div className="rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 p-4 shadow-2xs">
+                <div className="flex items-center gap-2 text-slate-900 dark:text-slate-100 font-extrabold text-xs mb-1.5 uppercase font-mono tracking-wider">
+                  <Server className="h-4 w-4 text-blue-600 dark:text-blue-400 shrink-0" />
                   <span>2. Raw Cliniko REST API Limitation</span>
                 </div>
-                <p className="text-[var(--color-text-secondary)] leading-relaxed">
+                <p className="text-xs sm:text-sm font-medium text-slate-800 dark:text-slate-200 leading-relaxed">
                   {selectedTask.nativeApiLimitation}
                 </p>
               </div>
 
               {/* Pillar 3: ClinikoOps AI Solution */}
-              <div className="rounded-lg border border-teal-200 dark:border-teal-900/60 bg-teal-50/60 dark:bg-teal-950/30 p-3">
-                <div className="flex items-center gap-1.5 text-teal-800 dark:text-teal-300 font-bold text-xs mb-1">
-                  <Sparkles className="h-3.5 w-3.5 text-teal-600 dark:text-teal-400 shrink-0" />
-                  <span>3. The ClinikoOps AI Automated Layer</span>
+              <div className="rounded-xl border border-teal-300 dark:border-teal-700 bg-teal-50/90 dark:bg-teal-950/40 p-4 shadow-2xs">
+                <div className="flex items-center gap-2 text-teal-900 dark:text-teal-200 font-extrabold text-xs mb-1.5 uppercase font-mono tracking-wider">
+                  <Sparkles className="h-4 w-4 text-teal-600 dark:text-teal-400 shrink-0" />
+                  <span>3. The ClinikoOps AI Autonomous Layer</span>
                 </div>
-                <p className="text-[var(--color-text-secondary)] leading-relaxed">
+                <p className="text-xs sm:text-sm font-medium text-slate-800 dark:text-slate-200 leading-relaxed">
                   {selectedTask.aiAutomationSolution}
                 </p>
               </div>
@@ -308,39 +313,42 @@ export function ClinikoTaskMatrix() {
             </div>
 
             {/* Impact Metric Strip */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
-              <div className="rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] p-3">
-                <span className="text-[10px] font-mono uppercase font-bold text-[var(--color-text-muted)] block">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+              <div className="rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 p-3.5 shadow-2xs">
+                <span className="text-[11px] font-mono uppercase font-bold text-slate-500 dark:text-slate-400 block">
                   Workflow Efficiency Gain
                 </span>
-                <span className="text-xs font-bold text-teal-600 dark:text-teal-400 mt-0.5 block">
+                <span className="text-sm font-black text-teal-700 dark:text-teal-300 mt-1 block">
                   {selectedTask.efficiencyGain}
                 </span>
               </div>
-              <div className="rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] p-3">
-                <span className="text-[10px] font-mono uppercase font-bold text-[var(--color-text-muted)] block">
-                  Monthly Financial Impact
+              <div className="rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 p-3.5 shadow-2xs">
+                <span className="text-[11px] font-mono uppercase font-bold text-slate-500 dark:text-slate-400 block">
+                  Practice Revenue / Capacity Impact
                 </span>
-                <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 mt-0.5 block">
+                <span className="text-sm font-black text-emerald-700 dark:text-emerald-300 mt-1 block">
                   {selectedTask.roiImpact}
                 </span>
               </div>
             </div>
 
             {/* Live Simulation Trace Preview */}
-            <div className="rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] p-3 font-mono text-xs">
-              <div className="flex items-center justify-between mb-1.5 text-[10px] font-bold text-[var(--color-text-muted)] uppercase">
-                <span>Automated Execution Trace</span>
-                <span className="text-emerald-600 dark:text-emerald-400">APP 11 Redacted</span>
+            <div className="rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 p-4 font-mono shadow-2xs">
+              <div className="flex items-center justify-between mb-2 text-xs font-bold text-slate-600 dark:text-slate-300 uppercase">
+                <span className="flex items-center gap-1.5">
+                  <Terminal className="h-3.5 w-3.5 text-teal-600" />
+                  Live Execution Trace Preview
+                </span>
+                <span className="text-emerald-700 dark:text-emerald-400 font-semibold">APP 11 Sanitized</span>
               </div>
-              <div className="space-y-1.5 text-[11px]">
-                <div className="p-2 rounded bg-[var(--color-panel-subtle)] border border-[var(--color-border)]">
-                  <span className="text-teal-600 dark:text-teal-400 font-bold mr-1.5">Input:</span>
-                  <span className="text-[var(--color-text-secondary)]">{selectedTask.sampleEvent.input}</span>
+              <div className="space-y-2 text-xs">
+                <div className="p-2.5 rounded-lg bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+                  <span className="text-teal-700 dark:text-teal-400 font-bold mr-1.5">Input Stream:</span>
+                  <span className="text-slate-800 dark:text-slate-200 font-medium">{selectedTask.sampleEvent.input}</span>
                 </div>
-                <div className="p-2 rounded bg-emerald-50/50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-800/60">
-                  <span className="text-emerald-600 dark:text-emerald-400 font-bold mr-1.5">Cliniko API Output:</span>
-                  <span className="text-[var(--color-text-primary)]">{selectedTask.sampleEvent.output}</span>
+                <div className="p-2.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800">
+                  <span className="text-emerald-800 dark:text-emerald-300 font-bold mr-1.5">Cliniko API Output:</span>
+                  <span className="text-slate-900 dark:text-slate-100 font-medium">{selectedTask.sampleEvent.output}</span>
                 </div>
               </div>
             </div>
@@ -348,12 +356,12 @@ export function ClinikoTaskMatrix() {
           </div>
 
           {/* Action Trigger Bar */}
-          <div className="pt-4 border-t border-[var(--color-border)] flex items-center justify-between gap-3 mt-4">
-            <div className="text-[11px] font-mono text-[var(--color-text-muted)]">
+          <div className="pt-4 border-t border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-3 mt-4">
+            <div className="text-xs font-mono font-medium text-slate-600 dark:text-slate-400">
               {simulatedSuccess === selectedTask.id ? (
-                <span className="text-emerald-600 dark:text-emerald-400 font-bold flex items-center gap-1">
-                  <CheckCircle2 className="h-3.5 w-3.5" />
-                  Dispatched in 42ms • Cliniko v1 Synced
+                <span className="text-emerald-700 dark:text-emerald-300 font-bold flex items-center gap-1.5">
+                  <CheckCircle2 className="h-4 w-4 text-emerald-600" />
+                  Executed in 42ms • Cliniko v1 Record Synced
                 </span>
               ) : (
                 <span>Zero-friction setup • 100% Client Codebase Ownership</span>
@@ -363,16 +371,16 @@ export function ClinikoTaskMatrix() {
               size="sm"
               onClick={() => handleSimulate(selectedTask)}
               disabled={simulatingId === selectedTask.id}
-              className="h-8 text-xs font-semibold bg-teal-600 hover:bg-teal-500 text-white shadow-xs px-3"
+              className="h-9 text-xs font-bold bg-teal-600 hover:bg-teal-500 text-white shadow-xs px-4 whitespace-nowrap"
             >
               {simulatingId === selectedTask.id ? (
                 <>
-                  <Clock className="h-3.5 w-3.5 mr-1.5 animate-spin" />
+                  <Clock className="h-4 w-4 mr-1.5 animate-spin" />
                   <span>Processing...</span>
                 </>
               ) : (
                 <>
-                  <Zap className="h-3.5 w-3.5 mr-1.5 text-teal-200" />
+                  <Zap className="h-4 w-4 mr-1.5 text-teal-200" />
                   <span>Simulate Task Automation</span>
                 </>
               )}

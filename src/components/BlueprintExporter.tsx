@@ -48,42 +48,86 @@ return [{ json: { ...items[0].json, sanitized_dictation: text } }];`,
       parameters: {
         model: 'gpt-4o-mini',
         temperature: 0.1,
-        systemPrompt: 'You are an Australian allied health clinical documentation assistant. Output valid JSON: { subjective, objective, assessment, plan, icd10_codes }',
+        response_format: { type: 'json_object' },
+        prompt: 'You are a licensed Australian physiotherapist assistant. Synthesize SOAP notes strictly formatted in sanitized Cliniko HTML tags (<p>, <ul>, <li>, <h2>, <strong>).',
       },
     },
     {
       id: 'node_4',
-      name: 'Cliniko Token-Bucket Rate Limiter',
-      type: 'n8n-nodes-base.limit',
-      parameters: {
-        maxRequestsPerMinute: 140, // 150 limit safety margin
-      },
-    },
-    {
-      id: 'node_5',
-      name: 'Cliniko REST API v1 Note Writeback',
+      name: 'Cliniko API v1 Dispatcher',
       type: 'n8n-nodes-base.httpRequest',
       parameters: {
         method: 'POST',
-        url: 'https://api.cliniko.com/v1/treatment_notes',
+        url: 'https://api.au1.cliniko.com/v1/treatment_notes',
+        authentication: 'genericCredentialType',
         headers: {
-          'Authorization': 'Bearer {{ $env.CLINIKO_API_KEY }}',
-          'User-Agent': 'ClinikoOps-AI/1.0 (Australia/Sydney)',
+          'User-Agent': 'ClinikoOps-AI/1.0 (Chris Practice Automation - dev@practice.com.au)',
           'Content-Type': 'application/json',
+          Accept: 'application/json',
         },
       },
     },
   ],
+  connections: {
+    'Cliniko Webhook Receiver': {
+      main: [[{ node: 'APP 11 PII Sanitizer & Firewall', type: 'main', index: 0 }]],
+    },
+    'APP 11 PII Sanitizer & Firewall': {
+      main: [[{ node: 'OpenAI GPT-4o-mini Clinical SOAP Generator', type: 'main', index: 0 }]],
+    },
+    'OpenAI GPT-4o-mini Clinical SOAP Generator': {
+      main: [[{ node: 'Cliniko API v1 Dispatcher', type: 'main', index: 0 }]],
+    },
+  },
 };
 
 const SAMPLE_MAKE_BLUEPRINT = {
-  name: 'Cliniko-Make-Modular-Clinical-Flow',
+  name: 'Cliniko-Patient-Recall-Reactivation-Make',
   flow: [
-    { id: 1, module: 'cliniko:watchNewAppointments', label: '1. Cliniko: Watch Completed Consultations' },
-    { id: 2, module: 'custom:piiRedaction', label: '2. APP 11 Compliance: Redact Medicare & Phone' },
-    { id: 3, module: 'openai:createChatCompletion', label: '3. gpt-4o-mini: Structure SOAP Notes & Plan' },
-    { id: 4, module: 'cliniko:createTreatmentNote', label: '4. Cliniko API: Create Treatment Note' },
-    { id: 5, module: 'slack:postMessage', label: '5. Clinician Notification: Review & Sign-Off' },
+    {
+      id: 1,
+      module: 'http:ActionMakeRequest',
+      metadata: { designer: { x: 0, y: 0 } },
+      parameters: {
+        url: 'https://api.au1.cliniko.com/v1/individual_appointments?status=Completed',
+        method: 'GET',
+        headers: [
+          { name: 'Authorization', value: 'Bearer {{cliniko_api_key}}' },
+          { name: 'User-Agent', value: 'ClinikoOps-AI/1.0 (Chris Practice Automation)' },
+        ],
+      },
+    },
+    {
+      id: 2,
+      module: 'builtin:FilterLapsedCarePlans',
+      metadata: { designer: { x: 300, y: 0 } },
+      filter: {
+        conditions: [[{ a: '{{1.daysSinceLastAppointment}}', o: 'number:greaterThan', b: 14 }]],
+      },
+    },
+    {
+      id: 3,
+      module: 'openai:CreateChatCompletion',
+      metadata: { designer: { x: 600, y: 0 } },
+      parameters: {
+        model: 'gpt-4o-mini',
+        messages: [
+          {
+            role: 'system',
+            content: 'Draft a friendly Australian allied health check-in SMS with 1-click booking link.',
+          },
+        ],
+      },
+    },
+    {
+      id: 4,
+      module: 'http:ActionMakeRequest',
+      metadata: { designer: { x: 900, y: 0 } },
+      parameters: {
+        url: 'https://api.au1.cliniko.com/v1/recalls',
+        method: 'POST',
+      },
+    },
   ],
 };
 
@@ -91,60 +135,58 @@ export function BlueprintExporter() {
   const [selectedFormat, setSelectedFormat] = useState<'n8n' | 'make'>('n8n');
   const [copied, setCopied] = useState(false);
 
-  const activeJson =
-    selectedFormat === 'n8n'
-      ? JSON.stringify(SAMPLE_N8N_BLUEPRINT, null, 2)
-      : JSON.stringify(SAMPLE_MAKE_BLUEPRINT, null, 2);
+  const activeJson = selectedFormat === 'n8n' ? SAMPLE_N8N_BLUEPRINT : SAMPLE_MAKE_BLUEPRINT;
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(activeJson);
+    navigator.clipboard.writeText(JSON.stringify(activeJson, null, 2));
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
 
   const handleDownload = () => {
-    const blob = new Blob([activeJson], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `cliniko-${selectedFormat}-workflow.json`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+    const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(activeJson, null, 2));
+    const downloadAnchor = document.createElement('a');
+    downloadAnchor.setAttribute('href', dataStr);
+    downloadAnchor.setAttribute(
+      'download',
+      selectedFormat === 'n8n' ? 'cliniko-n8n-workflow.json' : 'cliniko-make-blueprint.json'
+    );
+    document.body.appendChild(downloadAnchor);
+    downloadAnchor.click();
+    downloadAnchor.remove();
   };
 
   return (
-    <div className="w-full rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-5 sm:p-6 shadow-xs">
+    <div className="w-full rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6 sm:p-7 shadow-xs">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[var(--color-border)] pb-4 mb-5">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[var(--color-border)] pb-5 mb-6">
         <div>
-          <div className="flex items-center gap-2 mb-1">
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-teal-50 dark:bg-teal-950/40 px-2.5 py-0.5 text-xs font-semibold text-teal-800 dark:text-teal-300 border border-teal-200 dark:border-teal-800 whitespace-nowrap shrink-0">
+          <div className="flex items-center gap-2 mb-2 flex-wrap">
+            <span className="inline-flex items-center gap-1.5 rounded-md bg-teal-100 dark:bg-teal-950 px-2.5 py-0.5 text-xs font-bold text-teal-900 dark:text-teal-200 border border-teal-300 dark:border-teal-800 whitespace-nowrap shrink-0">
               <FileJson className="h-3.5 w-3.5 text-teal-600 dark:text-teal-400" />
               Turnkey Workflow Blueprints
             </span>
-            <span className="text-xs text-[var(--color-text-muted)] font-mono hidden sm:inline">
+            <span className="text-xs text-slate-700 dark:text-slate-300 font-mono font-bold hidden sm:inline">
               100% Client Account Ownership &bull; Zero Vendor Lock-In
             </span>
           </div>
-          <h3 className="text-base sm:text-lg font-bold text-[var(--color-text-primary)]">
+          <h2 className="text-xl sm:text-2xl font-black tracking-tight text-[var(--color-text-primary)]">
             One-Click Workflow Blueprint Export (Make.com &amp; n8n)
-          </h3>
-          <p className="text-xs text-[var(--color-text-secondary)] mt-0.5 max-w-3xl">
+          </h2>
+          <p className="text-sm font-medium text-[var(--color-text-secondary)] mt-1.5 max-w-3xl leading-relaxed">
             Export ready-to-import workflow configurations directly into your own private n8n or Make.com workspace. You retain 100% ownership of your Cliniko API keys, webhooks, and automation logic.
           </p>
         </div>
 
         {/* Format Switcher */}
         <div className="flex items-center gap-2 shrink-0">
-          <div className="flex rounded-lg border border-[var(--color-border)] bg-[var(--color-panel-subtle)] p-0.5 text-xs font-medium">
+          <div className="flex rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-900 p-1 text-xs font-medium font-mono">
             <button
               onClick={() => setSelectedFormat('n8n')}
               className={`px-3 py-1.5 rounded-md transition-all ${
                 selectedFormat === 'n8n'
-                  ? 'bg-[var(--color-surface)] text-[var(--color-text-primary)] shadow-xs font-bold'
-                  : 'text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)]'
+                  ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 shadow-xs font-extrabold'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100'
               }`}
             >
               n8n Workflow
@@ -153,8 +195,8 @@ export function BlueprintExporter() {
               onClick={() => setSelectedFormat('make')}
               className={`px-3 py-1.5 rounded-md transition-all ${
                 selectedFormat === 'make'
-                  ? 'bg-[var(--color-surface)] text-[var(--color-text-primary)] shadow-xs font-bold'
-                  : 'text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)]'
+                  ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 shadow-xs font-extrabold'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100'
               }`}
             >
               Make.com Blueprint
@@ -164,15 +206,15 @@ export function BlueprintExporter() {
       </div>
 
       {/* Code Display & Download Controls */}
-      <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-panel-subtle)] overflow-hidden">
+      <div className="rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 overflow-hidden shadow-xs">
         {/* Sub-bar */}
-        <div className="flex items-center justify-between border-b border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-2.5">
+        <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 py-3">
           <div className="flex items-center gap-2">
             <Code2 className="h-4 w-4 text-teal-600 dark:text-teal-400" />
-            <span className="text-xs font-mono font-bold text-[var(--color-text-primary)]">
+            <span className="text-xs font-mono font-bold text-slate-900 dark:text-slate-100">
               {selectedFormat === 'n8n' ? 'cliniko-n8n-workflow.json' : 'cliniko-make-blueprint.json'}
             </span>
-            <span className="text-xs text-[var(--color-text-muted)] font-mono">
+            <span className="text-xs text-slate-500 dark:text-slate-400 font-mono">
               (v1.0.0 &bull; Cliniko API v1 Ready)
             </span>
           </div>
@@ -182,16 +224,16 @@ export function BlueprintExporter() {
               size="sm"
               variant="outline"
               onClick={handleCopy}
-              className="h-7 text-xs border-[var(--color-border)] whitespace-nowrap shrink-0"
+              className="h-8 text-xs font-bold border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 whitespace-nowrap shrink-0 shadow-2xs"
             >
               {copied ? (
                 <>
-                  <Check className="h-3 w-3 mr-1 text-emerald-600" />
+                  <Check className="h-3.5 w-3.5 mr-1 text-emerald-600" />
                   <span>Copied!</span>
                 </>
               ) : (
                 <>
-                  <Copy className="h-3 w-3 mr-1" />
+                  <Copy className="h-3.5 w-3.5 mr-1" />
                   <span>Copy JSON</span>
                 </>
               )}
@@ -199,56 +241,30 @@ export function BlueprintExporter() {
             <Button
               size="sm"
               onClick={handleDownload}
-              className="h-7 text-xs bg-teal-600 hover:bg-teal-500 text-white whitespace-nowrap shrink-0"
+              className="h-8 text-xs font-bold bg-teal-600 hover:bg-teal-500 text-white shadow-xs whitespace-nowrap shrink-0"
             >
-              <Download className="h-3 w-3 mr-1" />
-              <span>Download .json</span>
+              <Download className="h-3.5 w-3.5 mr-1" />
+              <span>Download Blueprint</span>
             </Button>
           </div>
         </div>
 
-        {/* Code Body */}
-        <div className="p-4 max-h-64 overflow-y-auto font-mono text-xs text-[var(--color-text-secondary)] leading-relaxed">
-          <pre>{activeJson}</pre>
-        </div>
-      </div>
-
-      {/* 3-Step Import Instructions */}
-      <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-3">
-        <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-3">
-          <div className="flex items-center gap-2 text-xs font-bold text-[var(--color-text-primary)] mb-1">
-            <span className="flex h-5 w-5 items-center justify-center rounded-full bg-teal-100 text-teal-800 dark:bg-teal-950 dark:text-teal-300 font-mono text-xs">
-              1
-            </span>
-            <span>Import to Workspace</span>
-          </div>
-          <p className="text-xs text-[var(--color-text-secondary)]">
-            Open your private {selectedFormat === 'n8n' ? 'n8n' : 'Make.com'} dashboard, click <strong>"Import Workflow"</strong>, and paste this JSON blueprint.
-          </p>
+        {/* Code Content */}
+        <div className="p-4 max-h-[320px] overflow-y-auto">
+          <pre className="text-xs font-mono leading-relaxed text-slate-900 dark:text-slate-100 bg-white dark:bg-slate-950 p-4 rounded-lg border border-slate-200 dark:border-slate-800 overflow-x-auto font-semibold">
+            {JSON.stringify(activeJson, null, 2)}
+          </pre>
         </div>
 
-        <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-3">
-          <div className="flex items-center gap-2 text-xs font-bold text-[var(--color-text-primary)] mb-1">
-            <span className="flex h-5 w-5 items-center justify-center rounded-full bg-teal-100 text-teal-800 dark:bg-teal-950 dark:text-teal-300 font-mono text-xs">
-              2
-            </span>
-            <span>Add Cliniko API Key</span>
+        {/* Footer info bar */}
+        <div className="border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 py-2.5 flex items-center justify-between text-xs font-mono text-slate-600 dark:text-slate-400">
+          <div className="flex items-center gap-2">
+            <ShieldCheck className="h-3.5 w-3.5 text-teal-600 dark:text-teal-400" />
+            <span>Pre-configured with APP 11 Clinical Sanitization &bull; Australian Health Standard</span>
           </div>
-          <p className="text-xs text-[var(--color-text-secondary)]">
-            Generate your private Cliniko API Key in <em>Settings &rarr; Integrations</em> and insert into the HTTP header credentials.
-          </p>
-        </div>
-
-        <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-3">
-          <div className="flex items-center gap-2 text-xs font-bold text-[var(--color-text-primary)] mb-1">
-            <span className="flex h-5 w-5 items-center justify-center rounded-full bg-teal-100 text-teal-800 dark:bg-teal-950 dark:text-teal-300 font-mono text-xs">
-              3
-            </span>
-            <span>Activate Real-Time Sync</span>
-          </div>
-          <p className="text-xs text-[var(--color-text-secondary)]">
-            Toggle the workflow to <strong>Active</strong>. Your Cliniko practice receives instant automated SOAP notes &amp; intake screening.
-          </p>
+          <span className="hidden sm:inline text-teal-700 dark:text-teal-400 font-bold">
+            Zero Platform Lock-In
+          </span>
         </div>
       </div>
     </div>
