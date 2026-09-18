@@ -49,19 +49,19 @@ export function Header({
 }: HeaderProps) {
   const { theme, setTheme } = useTheme();
 
-  // Primary clinical automation navigation anchors
+  // Primary clinical automation navigation anchors (streamlined 4-engine core)
   const primaryNavItems = [
     { id: 'matrix', label: 'Task Matrix', icon: Layers },
-    { id: 'pipeline', label: 'Pipeline', icon: Activity },
     { id: 'soap', label: 'SOAP Copilot', icon: FileText },
     { id: 'intake', label: 'Intake Triage', icon: ClipboardList },
     { id: 'recall', label: 'Patient Recall', icon: Users },
-    { id: 'cliniko-api', label: 'Cliniko API', icon: Server },
   ];
 
   // Secondary navigation anchors in sleek "More" dropdown
   const secondaryNavItems = [
-    { id: 'roi', label: 'Clinical ROI Engine', icon: Calculator, desc: 'Hours saved & unbooked revenue recovered' },
+    { id: 'pipeline', label: 'Clinical Pipeline DAG', icon: Activity, desc: 'Event-driven webhook ingestion & writeback' },
+    { id: 'cliniko-api', label: 'Cliniko REST API v1', icon: Server, desc: 'Live playground & token-bucket tester' },
+    { id: 'roi', label: 'Practice ROI Engine', icon: Calculator, desc: 'Hours saved & unbooked revenue recovered' },
     { id: 'metrics', label: 'System Architecture', icon: BarChart3, desc: 'APP 11 compliance & latency metrics' },
     { id: 'briefing', label: 'Executive Briefing', icon: Zap, desc: 'Cliniko workflow context & evaluation paths' },
   ];
@@ -70,7 +70,7 @@ export function Header({
 
   return (
     <header className="sticky top-0 z-40 w-full border-b border-[var(--color-border)] bg-[var(--color-surface)]/95 backdrop-blur-md shadow-[0_1px_2px_rgba(0,0,0,0.03)]">
-      <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto flex h-14 max-w-7xl xl:max-w-[1400px] items-center justify-between px-4 sm:px-6 lg:px-8">
         {/* Left Cluster: Brand Anchor + Hairline Divider + Integrated Primary Nav */}
         <div className="flex items-center gap-3 xl:gap-4 shrink-0 min-w-0">
           {/* Brand Logo Lockup */}
@@ -223,16 +223,6 @@ export function Header({
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-
-          {/* High-Contrast Action CTA */}
-          <Button
-            size="sm"
-            onClick={onOpenChaosModal}
-            className="h-8 text-xs font-semibold bg-teal-600 hover:bg-teal-500 text-white shadow-xs whitespace-nowrap shrink-0 px-3"
-          >
-            <Zap className="h-3.5 w-3.5 mr-1 text-teal-200 shrink-0" />
-            <span className="whitespace-nowrap">Resilience Test</span>
-          </Button>
 
           {/* Theme Toggle Button */}
           <Button

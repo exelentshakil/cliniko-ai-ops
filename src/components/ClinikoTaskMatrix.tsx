@@ -166,21 +166,18 @@ export function ClinikoTaskMatrix() {
         <div>
           <div className="flex items-center gap-2 mb-2 flex-wrap">
             <span className="inline-flex items-center gap-1.5 rounded-md bg-teal-100 dark:bg-teal-950 px-2.5 py-0.5 text-xs font-bold text-teal-900 dark:text-teal-200 border border-teal-300 dark:border-teal-800 whitespace-nowrap shrink-0">
-              <Sparkles className="h-3.5 w-3.5 text-teal-600 dark:text-teal-400" />
-              Practice Automation Engine
+              <Activity className="h-3.5 w-3.5 text-teal-600 dark:text-teal-400" />
+              Operations Matrix
             </span>
             <span className="rounded-md bg-slate-100 dark:bg-slate-800 px-2 py-0.5 text-xs font-mono font-bold text-slate-800 dark:text-slate-200 border border-slate-300 dark:border-slate-700 whitespace-nowrap shrink-0">
-              Cliniko REST API v1
-            </span>
-            <span className="text-xs font-mono font-bold text-slate-500 dark:text-slate-400">
-              6 Core Clinical Operations
+              Cliniko v1 vs. AI Layer
             </span>
           </div>
           <h2 className="text-xl sm:text-2xl font-black tracking-tight text-[var(--color-text-primary)]">
-            Cliniko Operations Matrix: Practice Expectation vs. Native API vs. ClinikoOps AI
+            Cliniko Operations Matrix
           </h2>
-          <p className="text-sm font-medium text-[var(--color-text-secondary)] mt-1.5 max-w-3xl leading-relaxed">
-            A concrete architectural comparison showing why raw Cliniko API calls alone aren't enough, and how our autonomous AI layer bridges the gap to eliminate manual clinic admin.
+          <p className="text-sm font-medium text-[var(--color-text-secondary)] mt-1 max-w-2xl leading-relaxed">
+            Where native Cliniko API endpoints stop and ClinikoOps autonomous AI takes over.
           </p>
         </div>
 
@@ -202,11 +199,11 @@ export function ClinikoTaskMatrix() {
         </div>
       </div>
 
-      {/* Main Interactive Grid & Deep Dive */}
-      <div className="mt-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
+      {/* Main Interactive Grid & Deep Dive (50/50 Balanced) */}
+      <div className="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
         
-        {/* Left Column: Interactive Task Cards & System Telemetry (5 cols) */}
-        <div className="lg:col-span-5 space-y-4">
+        {/* Left Column: Interactive Task Cards & System Telemetry (50%) */}
+        <div className="space-y-4">
           <div className="flex items-center justify-between text-xs font-mono font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 px-1">
             <span>Automated Tasks ({filteredTasks.length})</span>
             <span className="text-teal-700 dark:text-teal-400">Select to inspect</span>
@@ -411,8 +408,8 @@ export function ClinikoTaskMatrix() {
           </div>
         </div>
 
-        {/* Right Column: 3-Pillar Architectural Deep-Dive (7 cols) */}
-        <div className="lg:col-span-7 flex flex-col justify-between rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-900/50 p-6">
+        {/* Right Column: 3-Pillar Architectural Deep-Dive (50%) */}
+        <div className="flex flex-col justify-between rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-900/50 p-6">
           <div className="space-y-4">
             
             {/* Active Task Header & Endpoints */}

@@ -111,7 +111,7 @@ export default function HomePage() {
       />
 
       <main className="w-full max-w-full min-w-0 overflow-x-hidden">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6 space-y-8">
+        <div className="mx-auto max-w-7xl xl:max-w-[1400px] px-4 sm:px-6 lg:px-8 py-6 space-y-8">
           <section id="briefing" className="scroll-mt-20">
             <ReviewerTour
               onNavigate={handleNavigate}

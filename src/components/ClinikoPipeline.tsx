@@ -103,17 +103,17 @@ export function ClinikoPipeline() {
           <div className="flex items-center gap-2 mb-2 flex-wrap">
             <span className="inline-flex items-center gap-1.5 rounded-md bg-emerald-100 dark:bg-emerald-950 px-2.5 py-0.5 text-xs font-bold text-emerald-900 dark:text-emerald-200 border border-emerald-300 dark:border-emerald-800 whitespace-nowrap shrink-0">
               <Activity className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400 animate-pulse" />
-              Event-Driven Pipeline DAG
+              Clinical Pipeline
             </span>
-            <span className="text-xs text-slate-700 dark:text-slate-300 font-mono font-bold">
-              Cliniko API v1 ➔ Make / Inngest Flow
+            <span className="rounded-md bg-slate-100 dark:bg-slate-800 px-2 py-0.5 text-xs font-mono font-bold text-slate-800 dark:text-slate-200 border border-slate-300 dark:border-slate-700 whitespace-nowrap shrink-0">
+              Cliniko v1 ➔ Inngest DAG
             </span>
           </div>
           <h2 className="text-xl sm:text-2xl font-black tracking-tight text-[var(--color-text-primary)]">
-            Autonomous Cliniko Clinical Workflow Pipeline
+            Clinical Automation Pipeline
           </h2>
-          <p className="text-sm font-medium text-[var(--color-text-secondary)] mt-1.5 max-w-3xl leading-relaxed">
-            Watch real-time data flow from Cliniko webhook ingestion through Australian Privacy Principle de-identification, dual LLM clinical synthesis, clinician verification gate, and final Cliniko treatment note writeback.
+          <p className="text-sm font-medium text-[var(--color-text-secondary)] mt-1 max-w-2xl leading-relaxed">
+            Real-time event-driven data flow from Cliniko webhooks to verified API writeback.
           </p>
         </div>
 

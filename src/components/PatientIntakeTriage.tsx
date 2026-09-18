@@ -116,17 +116,17 @@ export function PatientIntakeTriage() {
           <div className="flex items-center gap-2 mb-2 flex-wrap">
             <span className="inline-flex items-center gap-1.5 rounded-md bg-blue-100 dark:bg-blue-950 px-2.5 py-0.5 text-xs font-bold text-blue-900 dark:text-blue-200 border border-blue-300 dark:border-blue-800 whitespace-nowrap shrink-0">
               <FileCheck2 className="h-3.5 w-3.5 text-blue-600 dark:text-blue-400" />
-              Patient Intake &amp; Triage Engine
+              Intake Triage
             </span>
             <span className="rounded-md bg-slate-100 dark:bg-slate-800 px-2 py-0.5 text-xs font-mono font-bold text-slate-800 dark:text-slate-200 border border-slate-300 dark:border-slate-700 whitespace-nowrap shrink-0">
-              Automated Red-Flag Screening
+              Red-Flag Detection
             </span>
           </div>
           <h2 className="text-xl sm:text-2xl font-black tracking-tight text-[var(--color-text-primary)]">
-            Pre-Consultation Screening &amp; Red-Flag Detection
+            Patient Intake Triage
           </h2>
-          <p className="text-sm font-medium text-[var(--color-text-secondary)] mt-1.5 max-w-3xl leading-relaxed">
-            Scans incoming patient intake forms for serious clinical contraindications (e.g. Cauda Equina), scores urgency, and matches the patient to the right practitioner and Cliniko appointment duration.
+          <p className="text-sm font-medium text-[var(--color-text-secondary)] mt-1 max-w-2xl leading-relaxed">
+            Pre-consultation screening and automated red-flag detection for clinical safety.
           </p>
         </div>
 
@@ -193,10 +193,10 @@ export function PatientIntakeTriage() {
         })}
       </div>
 
-      {/* Triage Detail Display Grid */}
-      <div className="mt-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Left: Raw Intake Form Data & Triage Telemetry (5 cols) */}
-        <div className="lg:col-span-5 space-y-3.5">
+      {/* Triage Detail Display Grid (50/50 Balanced) */}
+      <div className="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Left: Raw Intake Form Data & Triage Telemetry (50%) */}
+        <div className="space-y-3.5">
           <div className="rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-900/40 p-4 space-y-3 font-mono text-xs shadow-2xs">
             <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-2.5">
               <span className="font-extrabold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
@@ -261,8 +261,8 @@ export function PatientIntakeTriage() {
           </div>
         </div>
 
-        {/* Right: AI Clinical Triage & Cliniko Recommendation (7 cols) */}
-        <div className="lg:col-span-7 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-850 p-5 flex flex-col justify-between shadow-xs">
+        {/* Right: AI Clinical Triage & Cliniko Recommendation (50%) */}
+        <div className="rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-850 p-5 flex flex-col justify-between shadow-xs">
           {triageResult && (
             <div className="space-y-3.5 font-mono text-xs">
               {/* Category Alert Banner */}

@@ -161,17 +161,17 @@ export function SoapNoteCopilot() {
           <div className="flex items-center gap-2 mb-2 flex-wrap">
             <span className="inline-flex items-center gap-1.5 rounded-md bg-teal-100 dark:bg-teal-950 px-2.5 py-0.5 text-xs font-bold text-teal-900 dark:text-teal-200 border border-teal-300 dark:border-teal-800 whitespace-nowrap shrink-0">
               <Stethoscope className="h-3.5 w-3.5 text-teal-600 dark:text-teal-400" />
-              Cliniko SOAP Copilot
+              SOAP Copilot
             </span>
             <span className="rounded-md bg-slate-100 dark:bg-slate-800 px-2 py-0.5 text-xs font-mono font-bold text-slate-800 dark:text-slate-200 border border-slate-300 dark:border-slate-700 whitespace-nowrap shrink-0">
-              Live Clinical Note Engine
+              Dictation ➔ Cliniko Note
             </span>
           </div>
           <h2 className="text-xl sm:text-2xl font-black tracking-tight text-[var(--color-text-primary)]">
-            Speech Dictation ➔ Structured Cliniko Treatment Note
+            SOAP Note Copilot
           </h2>
-          <p className="text-sm font-medium text-[var(--color-text-secondary)] mt-1.5 max-w-3xl leading-relaxed">
-            Clinicians dictate rough findings or bullet points. ClinikoOps AI structures them into standard Australian SOAP notes with ICD-10/SNOMED codes, cleans Medicare PII (APP 11), and generates 1-click Cliniko API writebacks.
+          <p className="text-sm font-medium text-[var(--color-text-secondary)] mt-1 max-w-2xl leading-relaxed">
+            Speech dictation synthesized into structured Cliniko treatment notes with ICD-10 coding and APP 11 de-identification.
           </p>
         </div>
 
@@ -205,10 +205,10 @@ export function SoapNoteCopilot() {
         ))}
       </div>
 
-      {/* Main Workbench: 2-Column Grid */}
-      <div className="mt-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Left Column: Input Dictation Workbench (5 cols) */}
-        <div className="lg:col-span-5 space-y-4">
+      {/* Main Workbench: 2-Column Grid (50/50 Balanced) */}
+      <div className="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Left Column: Input Dictation Workbench (50%) */}
+        <div className="space-y-4">
           <div className="rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-900/40 p-4 space-y-3.5">
             <div className="flex items-center justify-between">
               <label className="text-xs font-extrabold uppercase tracking-wider text-slate-700 dark:text-slate-300 font-mono">
@@ -358,8 +358,8 @@ export function SoapNoteCopilot() {
           </div>
         </div>
 
-        {/* Right Column: Generated Structured Cliniko Treatment Note (7 cols) */}
-        <div className="lg:col-span-7">
+        {/* Right Column: Generated Structured Cliniko Treatment Note (50%) */}
+        <div>
           <div className="h-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-850 p-5 flex flex-col justify-between shadow-xs">
             <div>
               <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3.5 mb-4">

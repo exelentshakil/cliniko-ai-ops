@@ -20,7 +20,7 @@ import {
 export function Footer() {
   return (
     <footer className="w-full border-t border-[var(--color-border)] bg-[var(--color-surface)] py-12 px-4 sm:px-6 lg:px-8 mt-16">
-      <div className="mx-auto max-w-7xl">
+      <div className="mx-auto max-w-7xl xl:max-w-[1400px]">
         {/* Balanced 3-Pillar Architecture Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-10 items-stretch">
           

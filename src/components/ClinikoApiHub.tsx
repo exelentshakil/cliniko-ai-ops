@@ -214,20 +214,17 @@ export function ClinikoApiHub() {
           <div className="flex items-center gap-2 mb-2 flex-wrap">
             <span className="inline-flex items-center gap-1.5 rounded-md bg-blue-100 dark:bg-blue-950 px-2.5 py-0.5 text-xs font-bold text-blue-900 dark:text-blue-200 border border-blue-300 dark:border-blue-800 whitespace-nowrap shrink-0">
               <Server className="h-3.5 w-3.5 text-blue-600 dark:text-blue-400" />
-              Cliniko REST API v1 Hub
+              Cliniko API Hub
             </span>
             <span className="rounded-md bg-teal-100 dark:bg-teal-950 px-2 py-0.5 text-xs font-mono font-bold text-teal-900 dark:text-teal-200 border border-teal-300 dark:border-teal-800 whitespace-nowrap shrink-0">
-              AU Production Shard
-            </span>
-            <span className="text-xs text-slate-700 dark:text-slate-300 font-mono font-bold">
-              Token-Bucket: 150 Req / Min
+              AU Shard (150 req/min)
             </span>
           </div>
           <h2 className="text-xl sm:text-2xl font-black tracking-tight text-[var(--color-text-primary)]">
-            Official Cliniko REST API v1 Playground &amp; Gateway
+            Cliniko API Gateway
           </h2>
-          <p className="text-sm font-medium text-[var(--color-text-secondary)] mt-1.5 max-w-3xl leading-relaxed">
-            Interactive playground demonstrating two-way integration with Cliniko’s official REST API v1. Supports high-throughput treatment note write-backs, patient synchronization, native recall engine dispatch, and clinical safety alerts.
+          <p className="text-sm font-medium text-[var(--color-text-secondary)] mt-1 max-w-2xl leading-relaxed">
+            Interactive playground for official Cliniko REST API v1 endpoints and rate limits.
           </p>
         </div>
 

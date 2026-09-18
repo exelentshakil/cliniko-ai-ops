@@ -79,16 +79,16 @@ export function ReviewerTour({ onNavigate, onOpenChaosModal }: ReviewerTourProps
           </div>
           <div>
             <div className="flex items-center gap-2.5 flex-wrap">
-              <h1 className="text-lg sm:text-xl font-extrabold tracking-tight text-[var(--color-text-primary)]">
-                Executive Briefing: Cliniko Practice Automation Architecture
+              <h1 className="text-lg sm:text-xl font-black tracking-tight text-[var(--color-text-primary)]">
+                Executive Briefing
               </h1>
               <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-mono font-semibold bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800">
                 <CheckCircle2 className="h-3 w-3" />
-                Sydney NSW &bull; Cliniko v1 API Ready
+                Cliniko v1 API Ready
               </span>
             </div>
-            <p className="text-sm font-medium text-[var(--color-text-secondary)] mt-1 max-w-3xl">
-              Built specifically for Australian allied health practices. Eliminates 2+ hours of daily practitioner documentation admin, catches pre-consult clinical red flags, and recovers lapsed patient treatment plans.
+            <p className="text-sm font-medium text-[var(--color-text-secondary)] mt-1 max-w-2xl leading-relaxed">
+              Cliniko practice automation architecture for Australian allied health. Eliminates 2+ hours of daily documentation admin.
             </p>
           </div>
         </div>

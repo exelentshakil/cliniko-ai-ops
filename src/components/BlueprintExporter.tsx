@@ -164,17 +164,17 @@ export function BlueprintExporter() {
           <div className="flex items-center gap-2 mb-2 flex-wrap">
             <span className="inline-flex items-center gap-1.5 rounded-md bg-teal-100 dark:bg-teal-950 px-2.5 py-0.5 text-xs font-bold text-teal-900 dark:text-teal-200 border border-teal-300 dark:border-teal-800 whitespace-nowrap shrink-0">
               <FileJson className="h-3.5 w-3.5 text-teal-600 dark:text-teal-400" />
-              Turnkey Workflow Blueprints
+              Blueprint Export
             </span>
-            <span className="text-xs text-slate-700 dark:text-slate-300 font-mono font-bold hidden sm:inline">
-              100% Client Account Ownership &bull; Zero Vendor Lock-In
+            <span className="rounded-md bg-slate-100 dark:bg-slate-800 px-2 py-0.5 text-xs font-mono font-bold text-slate-800 dark:text-slate-200 border border-slate-300 dark:border-slate-700 whitespace-nowrap shrink-0">
+              n8n &amp; Make.com
             </span>
           </div>
           <h2 className="text-xl sm:text-2xl font-black tracking-tight text-[var(--color-text-primary)]">
-            One-Click Workflow Blueprint Export (Make.com &amp; n8n)
+            Workflow Blueprint Exporter
           </h2>
-          <p className="text-sm font-medium text-[var(--color-text-secondary)] mt-1.5 max-w-3xl leading-relaxed">
-            Export ready-to-import workflow configurations directly into your own private n8n or Make.com workspace. You retain 100% ownership of your Cliniko API keys, webhooks, and automation logic.
+          <p className="text-sm font-medium text-[var(--color-text-secondary)] mt-1 max-w-2xl leading-relaxed">
+            Production n8n and Make.com configurations for self-hosted clinical automation.
           </p>
         </div>
 
