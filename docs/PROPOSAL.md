@@ -1,10 +1,8 @@
-hi chris,
-
-saw your post for automating tasks with cliniko. instead of writing a generic pitch, i built a live clinical automation prototype on cliniko's v1 api today:
-
 live: https://cliniko-ai-ops.vercel.app
-architecture: https://github.com/exelentshakil/cliniko-ai-ops
-video intro: https://youtube.com/shorts/kK3XZd5PNOk
+code: https://github.com/exelentshakil/cliniko-ai-ops
+
+hi Chris,
+saw your post for automating tasks with cliniko. instead of writing a generic pitch, i built a live clinical automation prototype on cliniko's v1 api in 30min so that i can show you i can handle your project.
 
 it automates:
 1. speech dictation into structured cliniko soap treatment notes (saves 11m/consult)
@@ -15,4 +13,4 @@ all patient data is sanitized in memory to comply with australian privacy princi
 
 which discipline is your clinic focused on (physio, chiro, podiatry)? reply with that one word and i'll tailor the templates.
 
-shaq
+Shaq
