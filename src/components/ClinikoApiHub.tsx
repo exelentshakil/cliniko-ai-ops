@@ -13,15 +13,18 @@ import {
   Layers,
   CheckCircle2,
   ExternalLink,
+  Globe,
+  AlertTriangle,
+  RotateCcw,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 interface EndpointSpec {
   id: string;
   name: string;
-  method: 'GET' | 'POST' | 'PUT' | 'DELETE';
+  method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
   path: string;
-  category: 'Clinical Records' | 'Appointments' | 'Patients' | 'Webhooks';
+  category: 'Clinical Records' | 'Appointments' | 'Patients' | 'Recalls' | 'Safety Alerts' | 'Webhooks';
   description: string;
   samplePayload?: Record<string, any>;
   sampleResponse: Record<string, any>;
@@ -34,17 +37,17 @@ const CLINIKO_ENDPOINTS: EndpointSpec[] = [
     method: 'POST',
     path: '/v1/treatment_notes',
     category: 'Clinical Records',
-    description: 'Writes finalized SOAP clinical notes directly into the Cliniko patient treatment history.',
+    description: 'Writes finalized SOAP clinical notes directly into the Cliniko patient treatment history using Cliniko sanitized HTML formatting.',
     samplePayload: {
       patient_id: 'pt_98241',
       appointment_id: 'apt_33102',
       practitioner_id: 'pr_5501',
-      treatment_note_template_id: 'tmpl_allied_soap_v2',
+      treatment_note_template_id: 'tmpl_allied_soap_v1',
       content: {
-        subjective: 'Patient reports persistent lower back pain following gym deadlifts...',
-        objective: 'Active lumbar flexion limited to 45 deg with pain...',
-        assessment: 'L4/L5 facet joint irritation secondary to acute mechanical strain.',
-        plan: 'Manual therapy, dry needling to gluteus medius, prescribed McKenzie extensions.',
+        subjective: '<p><strong>Chief Complaint:</strong> Acute lower back pain radiating to left glute.</p><p><strong>History:</strong> Pain started 48 hours ago after heavy deadlift. Pain score: 6/10.</p>',
+        objective: '<p><strong>ROM:</strong> Lumbar flexion limited to 45 degrees with pain.</p><ul><li>Slump test: Positive left side</li><li>Palpation: Tenderness over L4-L5 facet joint</li></ul>',
+        assessment: '<p><strong>Clinical Impression:</strong> Acute L4-L5 lumbar facet joint sprain with referred gluteal radiculopathy.</p><p><strong>ICD-10:</strong> M54.5, M51.26 | <strong>SNOMED CT:</strong> 279039007</p>',
+        plan: '<p>Manual therapy, soft tissue release, McKenzie extension exercises. Prescribe 4 bi-weekly rehabilitation consultations.</p>',
       },
       finalised: true,
       app11_sanitized: true,
@@ -54,6 +57,7 @@ const CLINIKO_ENDPOINTS: EndpointSpec[] = [
       created_at: '2026-09-18T11:15:30Z',
       patient: { id: 'pt_98241', name: 'James Morrison' },
       practitioner: { id: 'pr_5501', name: 'Chris' },
+      treatment_note_template: { id: 'tmpl_allied_soap_v1', name: 'Allied Health SOAP v1' },
       status: 'finalised',
       synced_via: 'ClinikoOps-AI-Worker',
     },
@@ -64,25 +68,73 @@ const CLINIKO_ENDPOINTS: EndpointSpec[] = [
     method: 'GET',
     path: '/v1/patients/pt_98241',
     category: 'Patients',
-    description: 'Retrieves patient profile, Medicare card number, emergency contact, and medical alerts.',
+    description: 'Retrieves patient profile, accepted privacy policy consent, Australian IANA timezone, Medicare identifiers, and active alerts.',
     sampleResponse: {
       id: 'pt_98241',
       first_name: 'James',
       last_name: 'Morrison',
       date_of_birth: '1984-06-12',
+      accepted_privacy_policy: true,
+      time_zone: 'Australia/Sydney',
       medicare_number: '2345 67890 1',
       medicare_reference_number: '1',
       phone_number: '+61 412 345 678',
       email: 'james.m@example.com.au',
       medical_alerts: ['No known drug allergies', 'Previous right knee ACL reconstruction 2019'],
-      concession_type: 'Private Health',
+      concession_type: 'Medicare EPC / CDM',
+    },
+  },
+  {
+    id: 'post-recalls',
+    name: 'Dispatch Native Cliniko Recall',
+    method: 'POST',
+    path: '/v1/recalls',
+    category: 'Recalls',
+    description: 'Enrolls lapsed patients into Cliniko’s native recall engine to follow up on unbooked rehabilitation care plan appointments.',
+    samplePayload: {
+      patient_id: 'pt_98241',
+      practitioner_id: 'pr_5501',
+      recall_type_id: 'rc_post_acute_rehab',
+      due_date: '2026-09-25',
+      notes: 'Automated 14-day recall: Medicare EPC session 3/5 remaining for lumbar recovery.',
+      re_engagement_sms_queued: true,
+    },
+    sampleResponse: {
+      id: 'rec_441098',
+      created_at: '2026-09-18T11:18:44Z',
+      patient_id: 'pt_98241',
+      due_date: '2026-09-25',
+      status: 'Pending Contact',
+      booking_link_sent: 'https://practice.cliniko.com/bookings?practitioner_id=pr_5501&token=au_9918',
+    },
+  },
+  {
+    id: 'post-medical-alerts',
+    name: 'Flag Clinical Red Alert',
+    method: 'POST',
+    path: '/v1/medical_alerts',
+    category: 'Safety Alerts',
+    description: 'Immediately writes a prominent clinical red flag to the Cliniko patient header when intake AI detects dangerous symptoms.',
+    samplePayload: {
+      patient_id: 'pt_98241',
+      name: 'RED FLAG: Cauda Equina Screening Required',
+      description: 'Pre-consult triage detected progressive lower-limb weakness & saddle sensory changes.',
+      priority: 'Urgent',
+    },
+    sampleResponse: {
+      id: 'ma_33109',
+      created_at: '2026-09-18T11:19:02Z',
+      patient_id: 'pt_98241',
+      name: 'RED FLAG: Cauda Equina Screening Required',
+      active: true,
+      displayed_in_header: true,
     },
   },
   {
     id: 'get-appointments',
-    name: 'Query Practitioner Schedule',
+    name: 'Query Individual Appointments',
     method: 'GET',
-    path: '/v1/appointments?practitioner_id=pr_5501&starts_at=2026-09-18',
+    path: '/v1/individual_appointments?practitioner_id=pr_5501&starts_at=2026-09-18',
     category: 'Appointments',
     description: 'Reads daily clinic appointments to feed pre-consultation AI triage and post-session note copilot.',
     sampleResponse: {
@@ -134,14 +186,17 @@ const CLINIKO_ENDPOINTS: EndpointSpec[] = [
 
 export function ClinikoApiHub() {
   const [selectedEndpoint, setSelectedEndpoint] = useState<EndpointSpec>(CLINIKO_ENDPOINTS[0]);
+  const [activeShard, setActiveShard] = useState<'au1' | 'global'>('au1');
   const [copied, setCopied] = useState(false);
   const [isExecuting, setIsExecuting] = useState(false);
   const [executedResponse, setExecutedResponse] = useState<any>(null);
   const [responseMeta, setResponseMeta] = useState<{ status: number; latency: number; remainingRate: number } | null>(null);
 
-  const curlCommand = `curl -X ${selectedEndpoint.method} "https://api.cliniko.com${selectedEndpoint.path}" \\
+  const baseUrl = activeShard === 'au1' ? 'https://api.au1.cliniko.com' : 'https://api.cliniko.com';
+
+  const curlCommand = `curl -X ${selectedEndpoint.method} "${baseUrl}${selectedEndpoint.path}" \\
   -H "Authorization: Bearer clk_test_apiKey_sydney_99412" \\
-  -H "User-Agent: ClinikoOps-AI/1.0 (Chris Practice Automation)" \\
+  -H "User-Agent: ClinikoOps-AI/1.0 (Chris Practice Automation - dev@practice.com.au)" \\
   -H "Accept: application/json"${
     selectedEndpoint.samplePayload
       ? ` \\\n  -H "Content-Type: application/json" \\\n  -d '${JSON.stringify(selectedEndpoint.samplePayload, null, 2)}'`
@@ -164,10 +219,10 @@ export function ClinikoApiHub() {
       setExecutedResponse(selectedEndpoint.sampleResponse);
       setResponseMeta({
         status: 200,
-        latency: Math.floor(Math.random() * 40) + 38, // 38ms - 78ms
+        latency: Math.floor(Math.random() * 32) + 36, // 36ms - 68ms
         remainingRate: 147, // Cliniko gives 150/min
       });
-    }, 600);
+    }, 550);
   };
 
   return (
@@ -175,27 +230,51 @@ export function ClinikoApiHub() {
       {/* Section Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[var(--color-border)] pb-4">
         <div>
-          <div className="flex items-center gap-2 mb-1">
+          <div className="flex items-center gap-2 mb-1 flex-wrap">
             <span className="inline-flex items-center gap-1.5 rounded-full bg-blue-50 dark:bg-blue-950/40 px-2.5 py-0.5 text-xs font-semibold text-blue-800 dark:text-blue-300 border border-blue-200 dark:border-blue-800 whitespace-nowrap shrink-0">
               <Server className="h-3 w-3 text-blue-600 dark:text-blue-400" />
               Cliniko REST API v1 Hub
+            </span>
+            <span className="rounded-full bg-teal-50 dark:bg-teal-950/40 px-2 py-0.5 text-[11px] font-mono font-bold text-teal-800 dark:text-teal-300 border border-teal-200 dark:border-teal-800 whitespace-nowrap shrink-0">
+              AU Production Shard
             </span>
             <span className="text-xs text-[var(--color-text-muted)] font-mono">
               Token-Bucket: 150 Req / Min
             </span>
           </div>
           <h2 className="text-lg sm:text-xl font-extrabold tracking-tight text-[var(--color-text-primary)]">
-            Live Cliniko API Gateway &amp; Webhook Orchestrator
+            Official Cliniko REST API v1 Playground &amp; Gateway
           </h2>
           <p className="text-xs sm:text-sm text-[var(--color-text-secondary)] mt-1 max-w-3xl">
-            Interactive playground demonstrating two-way integration with Cliniko’s REST API v1. Supports high-throughput treatment note write-backs, patient synchronization, and automated appointment event webhooks.
+            Interactive playground demonstrating two-way integration with Cliniko’s official REST API v1. Supports high-throughput treatment note write-backs, patient synchronization, native recall engine dispatch, and clinical safety alerts.
           </p>
         </div>
 
+        {/* Shard Selector & Gateway Status */}
         <div className="flex items-center gap-2 shrink-0">
-          <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-panel-subtle)] px-3 py-1.5 font-mono text-xs text-[var(--color-text-secondary)]">
-            <span className="text-emerald-500 font-bold mr-1.5">●</span>
-            v1.api.cliniko.com: <strong className="text-[var(--color-text-primary)]">Ready</strong>
+          <div className="flex items-center rounded-lg border border-[var(--color-border)] bg-[var(--color-panel-subtle)] p-0.5 text-xs font-mono">
+            <button
+              onClick={() => setActiveShard('au1')}
+              className={`px-2 py-1 rounded text-[11px] font-semibold transition-colors ${
+                activeShard === 'au1'
+                  ? 'bg-blue-600 text-white shadow-2xs'
+                  : 'text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)]'
+              }`}
+              title="Official Australian Shard"
+            >
+              api.au1.cliniko.com
+            </button>
+            <button
+              onClick={() => setActiveShard('global')}
+              className={`px-2 py-1 rounded text-[11px] font-semibold transition-colors ${
+                activeShard === 'global'
+                  ? 'bg-blue-600 text-white shadow-2xs'
+                  : 'text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)]'
+              }`}
+              title="Global Gateway"
+            >
+              api.cliniko.com
+            </button>
           </div>
         </div>
       </div>
@@ -246,7 +325,7 @@ export function ClinikoApiHub() {
             {selectedEndpoint.method}
           </span>
           <span className="text-xs font-mono font-bold text-[var(--color-text-primary)]">
-            https://api.cliniko.com{selectedEndpoint.path}
+            {baseUrl}{selectedEndpoint.path}
           </span>
         </div>
         <p className="text-xs text-[var(--color-text-secondary)]">
@@ -303,12 +382,13 @@ export function ClinikoApiHub() {
                   </div>
                   <div className="p-2.5 rounded-lg border border-[var(--color-border)] bg-[var(--color-panel-subtle)]">
                     <span className="text-[10px] font-bold text-[var(--color-text-muted)] block uppercase">
-                      Security &amp; Headers:
+                      Cliniko v1 Mandatory Headers:
                     </span>
                     <p className="mt-1 text-[var(--color-text-primary)]">
-                      Authorization: Bearer &bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;<br />
-                      User-Agent: ClinikoOps-AI/1.0 (Australia/Sydney)<br />
-                      APP-11-Audit-Id: sec_au_9941
+                      Authorization: Bearer clk_live_********************<br />
+                      User-Agent: ClinikoOps-AI/1.0 (dev@practice.com.au)<br />
+                      Accept: application/json<br />
+                      APP-11-Audit-Id: sec_au_sydney_9941
                     </p>
                   </div>
                 </div>
@@ -318,7 +398,7 @@ export function ClinikoApiHub() {
 
           <div className="p-3 bg-[var(--color-panel-subtle)] border-t border-[var(--color-border)] flex items-center justify-between">
             <span className="text-[11px] font-mono text-[var(--color-text-muted)]">
-              Simulate Live Call to Cliniko Sandbox
+              Simulate Live Call to Cliniko AU Shard
             </span>
             <Button
               size="sm"
