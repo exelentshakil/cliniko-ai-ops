@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Header } from '@/components/Header';
 import { ReviewerTour } from '@/components/ReviewerTour';
+import { ClinikoTaskMatrix } from '@/components/ClinikoTaskMatrix';
 import { ClinikoPipeline } from '@/components/ClinikoPipeline';
 import { SoapNoteCopilot } from '@/components/SoapNoteCopilot';
 import { PatientIntakeTriage } from '@/components/PatientIntakeTriage';
@@ -71,7 +72,7 @@ export default function HomePage() {
   };
 
   useEffect(() => {
-    const sectionIds = ['briefing', 'pipeline', 'soap', 'intake', 'recall', 'cliniko-api', 'metrics', 'roi', 'blueprints'];
+    const sectionIds = ['briefing', 'matrix', 'pipeline', 'soap', 'intake', 'recall', 'cliniko-api', 'metrics', 'roi', 'blueprints'];
     const observer = new IntersectionObserver(
       (entries) => {
         if (isNavigatingRef.current) return;
@@ -116,6 +117,10 @@ export default function HomePage() {
               onNavigate={handleNavigate}
               onOpenChaosModal={() => setChaosModalOpen(true)}
             />
+          </section>
+
+          <section id="matrix" className="scroll-mt-20">
+            <ClinikoTaskMatrix />
           </section>
 
           <section id="pipeline" className="scroll-mt-20">

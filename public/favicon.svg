@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
+  <rect width="32" height="32" rx="8" fill="url(#cliniko-grad)" />
+  <!-- Medical Stethoscope / Clinical Automation Cross -->
+  <path d="M16 7v18M7 16h18" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="16" cy="16" r="3.5" fill="#14b8a6" stroke="#ffffff" stroke-width="1.5"/>
+  <circle cx="23" cy="9" r="2" fill="#34d399"/>
+  <defs>
+    <linearGradient id="cliniko-grad" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0f766e"/>
+      <stop offset="1" stop-color="#047857"/>
+    </linearGradient>
+  </defs>
+</svg>

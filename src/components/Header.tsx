@@ -19,6 +19,7 @@ import {
   SlidersHorizontal,
   Stethoscope,
   BarChart3,
+  Layers,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -50,6 +51,7 @@ export function Header({
 
   // Primary clinical automation navigation anchors
   const primaryNavItems = [
+    { id: 'matrix', label: 'Task Matrix', icon: Layers },
     { id: 'pipeline', label: 'Pipeline', icon: Activity },
     { id: 'soap', label: 'SOAP Copilot', icon: FileText },
     { id: 'intake', label: 'Intake Triage', icon: ClipboardList },
