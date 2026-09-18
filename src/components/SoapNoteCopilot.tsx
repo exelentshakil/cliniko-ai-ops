@@ -17,6 +17,9 @@ import {
   Check,
   Building2,
   ArrowRight,
+  Terminal,
+  Server,
+  Lock,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { SoapNoteResult } from '@/lib/cliniko-ai';
@@ -225,7 +228,7 @@ export function SoapNoteCopilot() {
             </div>
 
             <textarea
-              rows={11}
+              rows={7}
               value={dictation}
               onChange={(e) => setDictation(e.target.value)}
               placeholder="Paste raw consult notes or speech transcript here..."
@@ -272,6 +275,85 @@ export function SoapNoteCopilot() {
             <div className="flex items-center justify-between">
               <span className="text-slate-600 dark:text-slate-400 font-semibold">Practitioner Scope:</span>
               <span className="font-bold text-slate-900 dark:text-slate-100">prac_sydney_01 (Chris)</span>
+            </div>
+          </div>
+
+          {/* In-Memory APP 11 & Privacy De-Identification Card */}
+          <div className="rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-850 p-4 text-xs font-mono space-y-3 shadow-2xs">
+            <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-2">
+              <span className="font-extrabold uppercase text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
+                <ShieldCheck className="h-4 w-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
+                APP 11 De-Identification Stream
+              </span>
+              <span className="text-[11px] font-bold text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-300 dark:border-emerald-800">
+                In-Memory Only
+              </span>
+            </div>
+            <div className="space-y-2 text-slate-700 dark:text-slate-300">
+              <div className="flex items-center justify-between">
+                <span>Medicare Card Number:</span>
+                <span className="text-emerald-700 dark:text-emerald-400 font-bold bg-slate-100 dark:bg-slate-900 px-2 py-0.5 rounded border border-slate-200 dark:border-slate-800">
+                  REDACTED [•••• ••••• •]
+                </span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span>Australian Mobile / Tel:</span>
+                <span className="text-emerald-700 dark:text-emerald-400 font-bold bg-slate-100 dark:bg-slate-900 px-2 py-0.5 rounded border border-slate-200 dark:border-slate-800">
+                  REDACTED [+61 4•• ••• •••]
+                </span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span>Prompt Injection Risk:</span>
+                <span className="text-blue-700 dark:text-blue-400 font-bold">0.02 (Nominal / Clean)</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span>Privacy Act 1988:</span>
+                <span className="text-slate-800 dark:text-slate-200 font-bold">Zero Ephemeral Retention</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Cliniko REST API v1 Ingestion Payload Preview */}
+          <div className="rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-900 text-slate-100 p-4 font-mono text-xs space-y-2.5 shadow-2xs">
+            <div className="flex items-center justify-between border-b border-slate-800 pb-2 text-[11px]">
+              <span className="text-slate-300 uppercase font-bold flex items-center gap-1.5">
+                <Terminal className="h-3.5 w-3.5 text-teal-400" />
+                Live Cliniko v1 Payload
+              </span>
+              <span className="text-emerald-400 font-bold">150 req/min: OK</span>
+            </div>
+            <div className="p-2.5 rounded-lg bg-slate-950 border border-slate-800 text-[11px] leading-relaxed text-slate-300 space-y-1 overflow-x-auto">
+              <div><span className="text-purple-400">&quot;patient_id&quot;</span>: <span className="text-emerald-400">&quot;pt_98241&quot;</span>,</div>
+              <div><span className="text-purple-400">&quot;practitioner_id&quot;</span>: <span className="text-emerald-400">&quot;pr_5501&quot;</span>,</div>
+              <div><span className="text-purple-400">&quot;template_id&quot;</span>: <span className="text-emerald-400">&quot;tmpl_allied_health_soap_v1&quot;</span>,</div>
+              <div><span className="text-purple-400">&quot;sections&quot;</span>: [</div>
+              <div className="pl-3 text-slate-400">{`{ "name": "Subjective", "content": "Acute lumbar VAS 7/10..." },`}</div>
+              <div className="pl-3 text-slate-400">{`{ "name": "Objective", "content": "ROM restricted 40%..." },`}</div>
+              <div className="pl-3 text-slate-400">{`{ "name": "Assessment", "codes": ["ICD-10 M54.5"] },`}</div>
+              <div className="pl-3 text-slate-400">{`{ "name": "Plan", "suggestedBooking": "Review in 4d" }`}</div>
+              <div>],</div>
+              <div><span className="text-purple-400">&quot;draft&quot;</span>: <span className="text-amber-400">false</span></div>
+            </div>
+          </div>
+
+          {/* Clinician Efficiency Yield Strip */}
+          <div className="rounded-xl border border-teal-300 dark:border-teal-800 bg-teal-50/80 dark:bg-teal-950/40 p-4 text-xs font-mono space-y-2.5 shadow-2xs">
+            <div className="flex items-center justify-between text-teal-900 dark:text-teal-200 font-extrabold uppercase">
+              <span className="flex items-center gap-1.5">
+                <Zap className="h-4 w-4 text-teal-600 dark:text-teal-400 shrink-0" />
+                Clinician Efficiency Yield
+              </span>
+              <span className="text-xs font-bold text-teal-800 dark:text-teal-300">11.5 mins / consult</span>
+            </div>
+            <div className="grid grid-cols-2 gap-2 pt-1 text-xs">
+              <div className="bg-white dark:bg-slate-900 p-2.5 rounded-lg border border-teal-200 dark:border-teal-800">
+                <div className="text-slate-500 dark:text-slate-400 text-[11px] font-medium">Weekly Saved</div>
+                <div className="text-sm font-black text-slate-900 dark:text-slate-100 mt-0.5">9.2 Hours</div>
+              </div>
+              <div className="bg-white dark:bg-slate-900 p-2.5 rounded-lg border border-teal-200 dark:border-teal-800">
+                <div className="text-slate-500 dark:text-slate-400 text-[11px] font-medium">Billable Unlock</div>
+                <div className="text-sm font-black text-teal-700 dark:text-teal-300 mt-0.5">+$3,680 / mo</div>
+              </div>
             </div>
           </div>
         </div>

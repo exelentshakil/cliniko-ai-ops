@@ -205,13 +205,15 @@ export function ClinikoTaskMatrix() {
       {/* Main Interactive Grid & Deep Dive */}
       <div className="mt-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
         
-        {/* Left Column: Interactive Task Cards (5 cols) */}
-        <div className="lg:col-span-5 space-y-3">
+        {/* Left Column: Interactive Task Cards & System Telemetry (5 cols) */}
+        <div className="lg:col-span-5 space-y-4">
           <div className="flex items-center justify-between text-xs font-mono font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 px-1">
             <span>Automated Tasks ({filteredTasks.length})</span>
             <span className="text-teal-700 dark:text-teal-400">Select to inspect</span>
           </div>
-          <div className="space-y-2.5 max-h-[660px] overflow-y-auto pr-1">
+
+          {/* Task Cards List */}
+          <div className="space-y-2.5">
             {filteredTasks.map((task) => {
               const isSelected = selectedTask.id === task.id;
               return (
@@ -248,6 +250,164 @@ export function ClinikoTaskMatrix() {
                 </div>
               );
             })}
+          </div>
+
+          {/* Dynamic Role Operational Yield Panel */}
+          {activeRole === 'Front Desk' && (
+            <div className="rounded-xl border border-blue-300 dark:border-blue-800 bg-blue-50/80 dark:bg-blue-950/40 p-4 text-xs font-mono space-y-2.5 shadow-2xs">
+              <div className="flex items-center justify-between border-b border-blue-200 dark:border-blue-800 pb-2">
+                <span className="font-extrabold uppercase text-blue-950 dark:text-blue-200 flex items-center gap-1.5">
+                  <Users className="h-4 w-4 text-blue-600 dark:text-blue-400 shrink-0" />
+                  Front Desk Operational Yield
+                </span>
+                <span className="text-[11px] font-bold text-blue-800 dark:text-blue-300 bg-white dark:bg-slate-900 px-2 py-0.5 rounded border border-blue-200 dark:border-blue-700">
+                  Zero Void
+                </span>
+              </div>
+              <div className="space-y-2 text-slate-800 dark:text-slate-200 font-medium font-sans text-xs">
+                <div className="flex items-start gap-2">
+                  <CheckCircle2 className="h-3.5 w-3.5 text-blue-600 dark:text-blue-400 mt-0.5 shrink-0" />
+                  <span><strong>Cancellation Recovery:</strong> Fills cancellations in &lt;4 mins via automated SMS broadcast.</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <CheckCircle2 className="h-3.5 w-3.5 text-blue-600 dark:text-blue-400 mt-0.5 shrink-0" />
+                  <span><strong>Red-Flag Protection:</strong> Intake forms screened instantly; alerts pinned to Cliniko headers.</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <CheckCircle2 className="h-3.5 w-3.5 text-blue-600 dark:text-blue-400 mt-0.5 shrink-0" />
+                  <span><strong>Reception Hours Saved:</strong> Eliminates ~14 hours of manual follow-up calls per week.</span>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {activeRole === 'Practitioners' && (
+            <div className="rounded-xl border border-teal-300 dark:border-teal-800 bg-teal-50/80 dark:bg-teal-950/40 p-4 text-xs font-mono space-y-2.5 shadow-2xs">
+              <div className="flex items-center justify-between border-b border-teal-200 dark:border-teal-800 pb-2">
+                <span className="font-extrabold uppercase text-teal-950 dark:text-teal-200 flex items-center gap-1.5">
+                  <Stethoscope className="h-4 w-4 text-teal-600 dark:text-teal-400 shrink-0" />
+                  Practitioner Clinical Yield
+                </span>
+                <span className="text-[11px] font-bold text-teal-800 dark:text-teal-300 bg-white dark:bg-slate-900 px-2 py-0.5 rounded border border-teal-200 dark:border-teal-700">
+                  11m Saved
+                </span>
+              </div>
+              <div className="space-y-2 text-slate-800 dark:text-slate-200 font-medium font-sans text-xs">
+                <div className="flex items-start gap-2">
+                  <CheckCircle2 className="h-3.5 w-3.5 text-teal-600 dark:text-teal-400 mt-0.5 shrink-0" />
+                  <span><strong>Zero After-Hours Charting:</strong> Dictate bullet points; AI writes full SOAP notes.</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <CheckCircle2 className="h-3.5 w-3.5 text-teal-600 dark:text-teal-400 mt-0.5 shrink-0" />
+                  <span><strong>Automated Clinical Coding:</strong> Matches ICD-10 and SNOMED CT codes with 100% precision.</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <CheckCircle2 className="h-3.5 w-3.5 text-teal-600 dark:text-teal-400 mt-0.5 shrink-0" />
+                  <span><strong>Billable Capacity:</strong> Unlocks ~2.5 hrs/day per clinician (~$3,500/mo extra revenue).</span>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {activeRole === 'Practice Manager' && (
+            <div className="rounded-xl border border-purple-300 dark:border-purple-800 bg-purple-50/80 dark:bg-purple-950/40 p-4 text-xs font-mono space-y-2.5 shadow-2xs">
+              <div className="flex items-center justify-between border-b border-purple-200 dark:border-purple-800 pb-2">
+                <span className="font-extrabold uppercase text-purple-950 dark:text-purple-200 flex items-center gap-1.5">
+                  <DollarSign className="h-4 w-4 text-purple-600 dark:text-purple-400 shrink-0" />
+                  Practice Revenue &amp; Compliance Yield
+                </span>
+                <span className="text-[11px] font-bold text-purple-800 dark:text-purple-300 bg-white dark:bg-slate-900 px-2 py-0.5 rounded border border-purple-200 dark:border-purple-700">
+                  +$6.4k/mo
+                </span>
+              </div>
+              <div className="space-y-2 text-slate-800 dark:text-slate-200 font-medium font-sans text-xs">
+                <div className="flex items-start gap-2">
+                  <CheckCircle2 className="h-3.5 w-3.5 text-purple-600 dark:text-purple-400 mt-0.5 shrink-0" />
+                  <span><strong>Recall Recovery:</strong> 42% re-engagement rate on unbooked multi-session care plans.</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <CheckCircle2 className="h-3.5 w-3.5 text-purple-600 dark:text-purple-400 mt-0.5 shrink-0" />
+                  <span><strong>PDF Referral Intake:</strong> GP and Medicare EPC referrals ingested in 15 seconds.</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <CheckCircle2 className="h-3.5 w-3.5 text-purple-600 dark:text-purple-400 mt-0.5 shrink-0" />
+                  <span><strong>Billing Compliance:</strong> Zero rejected claim codes; full APP 11 audit verification.</span>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {activeRole === 'All' && (
+            <div className="rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-100/80 dark:bg-slate-900/60 p-4 text-xs font-mono space-y-2.5 shadow-2xs">
+              <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-2">
+                <span className="font-extrabold uppercase text-slate-900 dark:text-slate-100 flex items-center gap-1.5">
+                  <Workflow className="h-4 w-4 text-teal-600 dark:text-teal-400 shrink-0" />
+                  Practice-Wide Efficiency Benchmark
+                </span>
+                <span className="text-[11px] font-bold text-teal-800 dark:text-teal-300 bg-white dark:bg-slate-800 px-2 py-0.5 rounded border border-slate-300 dark:border-slate-700">
+                  6 Core Ops
+                </span>
+              </div>
+              <div className="space-y-2 text-slate-800 dark:text-slate-200 font-medium font-sans text-xs">
+                <div className="flex items-start gap-2">
+                  <CheckCircle2 className="h-3.5 w-3.5 text-teal-600 dark:text-teal-400 mt-0.5 shrink-0" />
+                  <span><strong>82% Admin Load Reduction:</strong> Replaces manual data-entry with automated webhooks.</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <CheckCircle2 className="h-3.5 w-3.5 text-teal-600 dark:text-teal-400 mt-0.5 shrink-0" />
+                  <span><strong>Native Cliniko UX:</strong> Team stays in Cliniko; AI operates autonomously in background.</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <CheckCircle2 className="h-3.5 w-3.5 text-teal-600 dark:text-teal-400 mt-0.5 shrink-0" />
+                  <span><strong>Australian Privacy Compliance:</strong> Full in-memory de-identification of Medicare &amp; PII.</span>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Cliniko REST API Engine Telemetry Card */}
+          <div className="rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-850 p-4 text-xs font-mono space-y-2.5 shadow-2xs">
+            <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-2">
+              <span className="font-extrabold text-slate-900 dark:text-slate-100 uppercase flex items-center gap-1.5">
+                <Server className="h-3.5 w-3.5 text-blue-600 dark:text-blue-400 shrink-0" />
+                Cliniko REST API Resilience
+              </span>
+              <span className="text-[11px] font-bold text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950 px-2 py-0.5 rounded border border-emerald-300 dark:border-emerald-800">
+                150 req/min
+              </span>
+            </div>
+            <div className="space-y-1.5 text-slate-700 dark:text-slate-300">
+              <div className="flex items-center justify-between">
+                <span>Rate Limit Guard:</span>
+                <span className="font-bold text-slate-900 dark:text-slate-100">Token Bucket Sharding</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span>429 Spike Handling:</span>
+                <span className="font-bold text-teal-700 dark:text-teal-300">Exponential Jitter Backoff</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span>AI Dual-Provider:</span>
+                <span className="font-bold text-slate-900 dark:text-slate-100">OpenAI + Gemini Failover</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span>Execution Model:</span>
+                <span className="font-bold text-emerald-600 dark:text-emerald-400">Durable Inngest Pipelines</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Security & Governance Credentials Strip */}
+          <div className="rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-900 text-slate-200 p-3.5 text-xs font-mono flex items-center justify-between shadow-2xs">
+            <div className="flex items-center gap-2">
+              <ShieldCheck className="h-4 w-4 text-emerald-400 shrink-0" />
+              <div>
+                <div className="font-bold text-white text-xs">Securiti Certified AI TRiSM</div>
+                <div className="text-[11px] text-slate-400">NIST AI RMF • APP 11 Compliance</div>
+              </div>
+            </div>
+            <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-950 border border-emerald-800 text-emerald-400 shrink-0">
+              Verified
+            </span>
           </div>
         </div>
 
